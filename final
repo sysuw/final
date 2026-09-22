@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바이브 카페 주문서</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 엑셀 파일 생성을 위한 SheetJS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="cafe-card">
+    <!-- 카페 이름과 오늘의 인사를 보여주는 상단 영역 -->
+    <header class="cafe-header">
+      <div class="coffee-mark" aria-hidden="true">☕</div>
+      <h1>바이브 카페</h1>
+      <p>오늘도 좋은 하루의 시작</p>
+    </header>
+
+    <!-- 고객 정보와 음료 주문을 입력하는 폼 -->
+    <form class="order-form" id="order-form">
+      <div class="form-group">
+        <label for="customer-name">이름 <span class="required">필수</span></label>
+        <input type="text" id="customer-name" name="customer-name" placeholder="홍길동" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" placeholder="hong@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">전화번호</label>
+        <input type="tel" id="phone" name="phone" placeholder="010-1234-5678">
+      </div>
+
+      <div class="form-group">
+        <label for="drink">음료 선택</label>
+        <select id="drink" name="drink" required>
+          <option value="" selected disabled>선택하세요</option>
+          <option value="americano">아메리카노</option>
+          <option value="cafe-latte">카페라떼</option>
+          <option value="cafe-mocha">카페모카</option>
+          <option value="vanilla-latte">바닐라라떼</option>
+          <option value="green-tea-latte">녹차라떼</option>
+        </select>
+      </div>
+
+      <fieldset class="form-group choice-group">
+        <legend>사이즈</legend>
+        <div class="choice-row">
+          <label class="choice-item" for="size-s">
+            <input type="radio" id="size-s" name="size" value="S">
+            <span>S <small>작은</small></span>
+          </label>
+          <label class="choice-item" for="size-m">
+            <input type="radio" id="size-m" name="size" value="M" checked>
+            <span>M <small>보통</small></span>
+          </label>
+          <label class="choice-item" for="size-l">
+            <input type="radio" id="size-l" name="size" value="L">
+            <span>L <small>큰</small></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-group choice-group">
+        <legend>추가 옵션</legend>
+        <div class="choice-row options-row">
+          <label class="choice-item" for="extra-shot">
+            <input type="checkbox" id="extra-shot" name="options" value="extra-shot">
+            <span>샷 추가 <small>(+500원)</small></span>
+          </label>
+          <label class="choice-item" for="extra-cream">
+            <input type="checkbox" id="extra-cream" name="options" value="extra-cream">
+            <span>크림 추가 <small>(+500원)</small></span>
+          </label>
+          <label class="choice-item" for="extra-syrup">
+            <input type="checkbox" id="extra-syrup" name="options" value="extra-syrup">
+            <span>시럽 추가 <small>(+300원)</small></span>
+          </label>
+          <label class="choice-item" for="decaf">
+            <input type="checkbox" id="decaf" name="options" value="decaf">
+            <span>디카페인 <small>(+0원)</small></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="form-group">
+        <label for="requests">요청사항</label>
+        <textarea id="requests" name="requests" rows="4" placeholder="얼음 적게, 연하게 등"></textarea>
+      </div>
+
+      <!-- 제출과 초기화 기능을 나란히 배치한 버튼 영역 -->
+      <div class="button-row">
+        <button type="submit" class="submit-button">주문하기</button>
+        <button type="reset" class="reset-button">다시 작성</button>
+      </div>
+      <p class="save-message" id="save-message" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+</body>
+</html>
+/* 페이지 전체의 색상과 기본 여백을 설정합니다. */
+:root {
+  --cream: #faf6f0;
+  --card: #fffdf9;
+  --brown: #7b4b32;
+  --brown-dark: #5e3523;
+  --brown-light: #f2e4d5;
+  --text: #555;
+  --border: #d7d0c8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 36px 16px;
+  background-color: var(--cream);
+  color: var(--text);
+  font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+}
+
+.cafe-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 34px 30px 30px;
+  background-color: var(--card);
+  border: 1px solid #eee4d8;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(106, 73, 48, 0.1);
+}
+
+.cafe-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.coffee-mark {
+  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  background-color: var(--brown-light);
+  border-radius: 50%;
+  font-size: 25px;
+}
+
+h1 {
+  margin: 0;
+  color: var(--brown-dark);
+  font-size: 30px;
+  letter-spacing: 0;
+}
+
+.cafe-header p {
+  margin: 9px 0 0;
+  color: #9a7258;
+  font-size: 14px;
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+label,
+legend {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.required {
+  margin-left: 4px;
+  color: #b56b4e;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #444;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brown);
+  box-shadow: 0 0 0 3px rgba(123, 75, 50, 0.12);
+}
+
+select {
+  cursor: pointer;
+}
+
+textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.choice-group {
+  padding-top: 1px;
+}
+
+.choice-group legend {
+  width: 100%;
+  padding: 0;
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.choice-item {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 11px;
+  border: 1px solid #e2d9d0;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #66584e;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.choice-item:has(input:checked) {
+  border-color: #c69a7e;
+  background-color: #fff7ef;
+  color: var(--brown-dark);
+}
+
+.choice-item input {
+  accent-color: var(--brown);
+  margin: 0;
+}
+
+.choice-item small {
+  color: #9b8b80;
+  font-size: 11px;
+}
+
+.options-row .choice-item {
+  flex: 1 1 calc(50% - 9px);
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.submit-button {
+  flex: 1;
+  background-color: var(--brown);
+}
+
+.submit-button:hover {
+  background-color: var(--brown-dark);
+}
+
+.reset-button {
+  flex: 0 0 32%;
+  background-color: #aaa5a0;
+}
+
+.reset-button:hover {
+  background-color: #8d8883;
+}
+
+.save-message {
+  min-height: 20px;
+  margin: -3px 0 0;
+  color: #6c8a62;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .cafe-card {
+    padding: 27px 18px 22px;
+    border-radius: 14px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  .choice-item {
+    flex: 1 1 calc(33.333% - 9px);
+    justify-content: center;
+    padding: 8px 6px;
+  }
+
+  .options-row .choice-item {
+    flex-basis: calc(50% - 9px);
+  }
+}
+// 주문 폼을 찾아 엑셀 저장 기능을 연결합니다.
+const orderForm = document.querySelector("#order-form");
+const saveMessage = document.querySelector("#save-message");
+
+// 화면에 표시되는 옵션 이름을 가져옵니다.
+function getSelectedOptions() {
+  return [...document.querySelectorAll('input[name="options"]:checked')]
+    .map((option) => option.closest("label").querySelector("span").textContent.trim())
+    .join(", ") || "없음";
+}
+
+// 입력된 주문 내용을 엑셀 파일의 한 행으로 만들어 저장합니다.
+function saveOrderAsExcel() {
+  if (typeof XLSX === "undefined") {
+    saveMessage.textContent = "엑셀 기능을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.";
+    return;
+  }
+
+  const selectedDrink = document.querySelector("#drink");
+  const selectedSize = document.querySelector('input[name="size"]:checked');
+  const orderData = [{
+    주문일시: new Date().toLocaleString("ko-KR"),
+    이름: document.querySelector("#customer-name").value,
+    이메일: document.querySelector("#email").value || "미입력",
+    전화번호: document.querySelector("#phone").value || "미입력",
+    음료: selectedDrink.options[selectedDrink.selectedIndex].text,
+    사이즈: selectedSize ? selectedSize.value : "미선택",
+    추가옵션: getSelectedOptions(),
+    요청사항: document.querySelector("#requests").value || "없음"
+  }];
+
+  const worksheet = XLSX.utils.json_to_sheet(orderData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "주문내역");
+  XLSX.writeFile(workbook, `바이브카페_주문_${getFileDate()}.xlsx`);
+
+  saveMessage.textContent = "주문 정보가 엑셀 파일로 저장되었습니다.";
+}
+
+// 파일 이름에 사용할 날짜를 YYYYMMDD 형식으로 만듭니다.
+function getFileDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}${month}${day}`;
+}
+
+orderForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!orderForm.reportValidity()) {
+    return;
+  }
+
+  saveOrderAsExcel();
+});
+
+orderForm.addEventListener("reset", () => {
+  saveMessage.textContent = "";
+});
