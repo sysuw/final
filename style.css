@@ -1,0 +1,258 @@
+/* 페이지 전체의 색상과 기본 여백을 설정합니다. */
+:root {
+  --cream: #faf6f0;
+  --card: #fffdf9;
+  --brown: #7b4b32;
+  --brown-dark: #5e3523;
+  --brown-light: #f2e4d5;
+  --text: #555;
+  --border: #d7d0c8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 36px 16px;
+  background-color: var(--cream);
+  color: var(--text);
+  font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+}
+
+.cafe-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 34px 30px 30px;
+  background-color: var(--card);
+  border: 1px solid #eee4d8;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(106, 73, 48, 0.1);
+}
+
+.cafe-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.coffee-mark {
+  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  background-color: var(--brown-light);
+  border-radius: 50%;
+  font-size: 25px;
+}
+
+h1 {
+  margin: 0;
+  color: var(--brown-dark);
+  font-size: 30px;
+  letter-spacing: 0;
+}
+
+.cafe-header p {
+  margin: 9px 0 0;
+  color: #9a7258;
+  font-size: 14px;
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+label,
+legend {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.required {
+  margin-left: 4px;
+  color: #b56b4e;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #444;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brown);
+  box-shadow: 0 0 0 3px rgba(123, 75, 50, 0.12);
+}
+
+select {
+  cursor: pointer;
+}
+
+textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.choice-group {
+  padding-top: 1px;
+}
+
+.choice-group legend {
+  width: 100%;
+  padding: 0;
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.choice-item {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 11px;
+  border: 1px solid #e2d9d0;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #66584e;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.choice-item:has(input:checked) {
+  border-color: #c69a7e;
+  background-color: #fff7ef;
+  color: var(--brown-dark);
+}
+
+.choice-item input {
+  accent-color: var(--brown);
+  margin: 0;
+}
+
+.choice-item small {
+  color: #9b8b80;
+  font-size: 11px;
+}
+
+.options-row .choice-item {
+  flex: 1 1 calc(50% - 9px);
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.submit-button {
+  flex: 1;
+  background-color: var(--brown);
+}
+
+.submit-button:hover {
+  background-color: var(--brown-dark);
+}
+
+.reset-button {
+  flex: 0 0 32%;
+  background-color: #aaa5a0;
+}
+
+.reset-button:hover {
+  background-color: #8d8883;
+}
+
+.save-message {
+  min-height: 20px;
+  margin: -3px 0 0;
+  color: #6c8a62;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .cafe-card {
+    padding: 27px 18px 22px;
+    border-radius: 14px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  .choice-item {
+    flex: 1 1 calc(33.333% - 9px);
+    justify-content: center;
+    padding: 8px 6px;
+  }
+
+  .options-row .choice-item {
+    flex-basis: calc(50% - 9px);
+  }
+}
